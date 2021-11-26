@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.6.6 <0.9.0;
 
+import "./RandomNumberGenerator.sol";
+
 contract Lottery {
     // Index of the winning player
     uint256 public winnerPlayerIndex;
@@ -20,11 +22,20 @@ contract Lottery {
     // A seed for this contract
     uint256 seed;
 
+    // Random Number Generator Contract
+    RandomNumberGenerator rng;
+
     // TODO: receive winnerPricePercentage, ticketPrice, deadline in days, in the constructor
-    constructor(uint256 _seed, uint256 _deadline) payable {
+    constructor(
+        uint256 _seed,
+        uint256 _deadline,
+        address _rng
+    ) payable {
         deadline = block.timestamp + (_deadline * 1 minutes);
         ticketPrice = 1 ether;
         seed = _seed;
+        rng = RandomNumberGenerator(_rng);
+        rng.getRandomNumber();
     }
 
     modifier afterDeadline() {
@@ -79,21 +90,8 @@ contract Lottery {
         );
         require(players.length == 0, "Not enough players participating");
 
-        winnerPlayerIndex = pseudoRandomNumberRange(seed, 0, players.length);
+        uint256 randomNumber = rng.randomResult();
+        winnerPlayerIndex = (randomNumber % players.length) + 1;
         lotteryEnded = true;
-    }
-
-    // Generate a pseudo random number between a given range.
-    // NOTE: This is predictable and not ready for production usage.
-    // Take a look into Chainlink's VRFConsumerBase or another RNG off-chain approach.
-    function pseudoRandomNumberRange(
-        uint256 _seed,
-        uint256 min,
-        uint256 max
-    ) public view returns (uint256) {
-        return
-            (uint256(
-                keccak256(abi.encodePacked(block.timestamp, msg.sender, _seed))
-            ) % max) + min;
     }
 }
