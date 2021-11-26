@@ -6,11 +6,11 @@ The constract is instantiated with a seed and the deadline in minutes.
 
 Everyone can buy a ticket until the deadline ends.
 
-Once the deadline is reached, anyone can invoke the function startDrawning once to randomly select the winner.
+Once the deadline is reached, anyone can invoke the function startDrawning once to randomly select the winner. A non-deterministic random number is generated using a Chainlink oracle in order to choose a winner.
 
-The winner can then invoke claimWinningPrice to receive the winning price.
+The winner can then invoke claimWinningPrice to receive the price.
 
-> NOTE: currently the RNG is based on a predeterministic solution. I'll look forward to integrate a Chainlink Oracle instead.
+Further calls to buyTicket, startDrawing and claimWinningPrice are forbidden.
 
 ```bash
 truffle compile
