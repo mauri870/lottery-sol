@@ -25,7 +25,6 @@ contract Lottery {
     // Random Number Generator Contract
     RandomNumberGenerator rng;
 
-    // TODO: receive winnerPricePercentage, ticketPrice, deadline in days, in the constructor
     constructor(
         uint256 _seed,
         uint256 _deadline,
